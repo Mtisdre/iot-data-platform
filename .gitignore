@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+
+# SQLite DB
+*.db
+
+# Streamlit cache
+.streamlit/
+
+# macOS
+.DS_Store
