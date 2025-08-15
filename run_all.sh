@@ -6,7 +6,17 @@ echo "2) Cloud"
 read -p "Enter choice (1 or 2): " choice
 
 # Sanal ortamı aktif et
+if [ ! -d ".venv" ]; then
+    echo "❌ Virtual environment not found. Please create it first."
+    exit 1
+fi
 source .venv/bin/activate
+
+# .env dosyasını kontrol et
+if [ ! -f ".env" ]; then
+    echo "❌ .env file not found. Please create it first."
+    exit 1
+fi
 
 # .env'den API_URL seç
 if [ "$choice" == "1" ]; then
@@ -17,6 +27,8 @@ else
     echo "❌ Invalid choice. Exiting."
     exit 1
 fi
+
+echo "🔗 Using API_URL: $API_URL"
 
 # Process ID'leri takip etmek için dizi
 PIDS=()
