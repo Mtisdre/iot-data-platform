@@ -11,6 +11,8 @@ It collects data via a REST API, stores it in SQLite (local) or PostgreSQL (clou
 - Streamlit dashboard for visualization
 - Automated tests and CI with GitHub Actions
 - Real-time anomaly detection & auto-refresh dashboard
+- `.env`-based API switching for Local/Cloud
+- Unified `run_all.sh` script to launch entire system
 
 ---
 
@@ -44,22 +46,20 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Running the Project Locally
-### 1. Start the backend API
-```bash
-cd backend
-python app.py
-```
+## ▶️ Running the Project
 
-### 2. Run the sensor simulator
+### 1. Using `run_all.sh` (Recommended)
 ```bash
-cd sensor_simulator
-python sensor.py
+chmod +x run_all.sh
+./run_all.sh
 ```
+- Select **Local** to run backend, sensor simulator, and dashboard locally.
+- Select **Cloud** to run sensor simulator and dashboard connected to cloud backend.
 
-### 3. Open the dashboard
-```bash
-streamlit run dashboard.py
+`.env` controls API URL switching automatically:
+```env
+API_URL_LOCAL=http://127.0.0.1:5050/data
+API_URL_CLOUD=https://iot-data-platform.onrender.com/data
 ```
 
 ---
@@ -68,7 +68,7 @@ streamlit run dashboard.py
 
 ### 1. Add sensor data (POST)
 ```bash
-curl -X POST http://127.0.0.1:5000/data   -H "Content-Type: application/json"   -d '{"temperature": 25.3, "humidity": 60}'
+curl -X POST http://127.0.0.1:5050/data   -H "Content-Type: application/json"   -d '{"temperature": 25.3, "humidity": 60}'
 ```
 
 **Expected Response:**
@@ -87,18 +87,7 @@ curl -X POST http://127.0.0.1:5000/data   -H "Content-Type: application/json"   
 
 ### 2. Get all sensor data (GET)
 ```bash
-curl http://127.0.0.1:5000/data
-```
-
-**Expected Response:**
-```json
-[
-  {
-    "temperature": 25.3,
-    "humidity": 60,
-    "timestamp": "2025-08-15T12:34:56.789123"
-  }
-]
+curl http://127.0.0.1:5050/data
 ```
 
 ---
@@ -109,6 +98,8 @@ curl http://127.0.0.1:5000/data
 - **Database:** SQLite (local), PostgreSQL (cloud)
 - **Testing:** Pytest
 - **CI/CD:** GitHub Actions
+- **Environment Management:** python-dotenv
+- **Auto-refresh:** streamlit-autorefresh
 
 ---
 
@@ -156,9 +147,9 @@ This project can be deployed to the cloud using **Render** with a PostgreSQL dat
 ---
 
 ### 2. Dashboard Connection
-1. Update `API_URL` in `dashboard.py`:
-   ```python
-   API_URL = "https://your-backend.onrender.com/data"
+1. Update `.env`:
+   ```env
+   API_URL_CLOUD=https://your-backend.onrender.com/data
    ```
 2. Run the dashboard locally:
    ```bash
@@ -168,23 +159,25 @@ This project can be deployed to the cloud using **Render** with a PostgreSQL dat
 ---
 
 ### 3. Sensor Simulator to Cloud
-1. Update `API_URL` in `sensor.py`:
-   ```python
-   API_URL = "https://your-backend.onrender.com/data"
+1. Update `.env`:
+   ```env
+   API_URL_CLOUD=https://your-backend.onrender.com/data
    ```
 2. Run the simulator locally to send data to the cloud database:
    ```bash
-   python sensor.py
+   python sensor_simulator/sensor.py
    ```
 
 ---
 
 ## 🔮 Future Improvements
 - **Advanced Anomaly Detection:** Implement ML models for predictive maintenance.
-- **Automatic Dashboard Refresh:** Enable live updates without manual reloads.
 - **Data Export:** Allow exporting collected data as CSV or Excel for further analysis.
-- **User Authentication:** Add a login system to secure access to the dashboard and API.
+- **User Authentication:** Add login system to secure access to dashboard and API.
 - **Cloud Deployment Enhancements:** Deploy the dashboard as a cloud-hosted web app.
 - **Real Sensor Integration:** Connect to actual IoT hardware (e.g., Raspberry Pi, ESP32).
 
 ---
+
+## 📄 License
+MIT License
