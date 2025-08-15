@@ -6,3 +6,6 @@ streamlit
 pandas
 matplotlib
 pytest
+gunicorn
+psycopg2-binary
+gunicorn
