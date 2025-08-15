@@ -9,9 +9,19 @@ CORS(app)
 
 # Veritabanı ayarı
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'sensor_data.db')
+
+# Ortam değişkeninden al (yoksa SQLite kullan)
+DATABASE_URL = os.environ.get("DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'sensor_data.db')}")
+
+# Render/Railway gibi platformlarda postgres:// yerine postgresql:// gerekiyor
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
+
 
 # Model
 class SensorData(db.Model):
@@ -55,4 +65,6 @@ def get_data():
     ]), 200
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5050))
+    app.run(host="0.0.0.0", port=port)
+

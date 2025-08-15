@@ -2,7 +2,7 @@ import requests
 import random
 import time
 
-API_URL = "http://127.0.0.1:5000/data"
+API_URL = "https://iot-data-platform.onrender.com/data"
 
 def generate_sensor_data():
     temperature = round(random.uniform(20.0, 30.0), 2)  # 20-30°C

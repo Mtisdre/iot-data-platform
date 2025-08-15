@@ -2,17 +2,17 @@
 
 ## 📌 Project Overview
 This project simulates an IoT-based temperature & humidity sensor network.  
-It collects data via a REST API, stores it in SQLite, and visualizes it with a Streamlit dashboard.
+It collects data via a REST API, stores it in SQLite (local) or PostgreSQL (cloud), and visualizes it with a Streamlit dashboard.
 
 **Key Features:**
 - Simulated IoT sensor data (Python script)
 - REST API (Flask) for data collection
-- SQLite database for storage
+- SQLite database for local storage, PostgreSQL for cloud
 - Streamlit dashboard for visualization
 - Automated tests and CI with GitHub Actions
 - Real-time anomaly detection & auto-refresh dashboard
 
-
+---
 
 ### 🔍 Anomaly Detection
 The dashboard automatically refreshes every 10 seconds and checks for abnormal sensor readings:
@@ -20,17 +20,15 @@ The dashboard automatically refreshes every 10 seconds and checks for abnormal s
 - **Low humidity alert:** If humidity drops below 45%
 Alerts are displayed in red for quick recognition.
 
-
 ---
 
 ## 📸 Screenshot
 ![Dashboard Screenshot](docs/dashboard.png)
 ![Anomaly Alert Screenshot](docs/anomaly_alert.png)
 
-
 ---
 
-## 🚀 Installation & Setup
+## 🚀 Installation & Setup (Local)
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/Mitisdre/iot-data-platform.git
@@ -46,7 +44,7 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Running the Project
+## ▶️ Running the Project Locally
 ### 1. Start the backend API
 ```bash
 cd backend
@@ -108,7 +106,7 @@ curl http://127.0.0.1:5000/data
 ## 🛠 Tech Stack
 - **Backend:** Flask, Flask-CORS, Flask-SQLAlchemy
 - **Frontend:** Streamlit
-- **Database:** SQLite
+- **Database:** SQLite (local), PostgreSQL (cloud)
 - **Testing:** Pytest
 - **CI/CD:** GitHub Actions
 
@@ -117,7 +115,7 @@ curl http://127.0.0.1:5000/data
 ## 📐 Project Architecture
 ```plaintext
 +-------------------+         POST/GET         +-------------------+        +-------------------+
-| Sensor Simulator  | ----------------------> |  Flask API Server  | -----> |   SQLite Database |
+| Sensor Simulator  | ----------------------> |  Flask API Server  | -----> |   SQLite/PostgreSQL|
 | (Python script)   |                         | (backend/app.py)   |        +-------------------+
 +-------------------+                         |                   |
                                                |                   | -----> +-------------------+
@@ -134,14 +132,59 @@ pytest
 
 ---
 
+## ☁️ Cloud Deployment
+
+This project can be deployed to the cloud using **Render** with a PostgreSQL database.
+
+### 1. Backend Deployment
+1. Create a free account at [Render](https://render.com).
+2. Create a new **PostgreSQL** instance and copy its **External Database URL**.
+3. Create a new **Web Service**:
+   - **Branch**: `main`
+   - **Root Directory**: `backend`
+   - **Build Command**: `pip install -r ../requirements.txt`
+   - **Start Command**: `gunicorn app:app`
+4. Add the following environment variables:
+   - `DATABASE_URL` → Your PostgreSQL connection string
+   - `PORT` → `10000` (optional, Render sets it automatically)
+5. Deploy the service.  
+   Example backend URL:  
+   ```
+   https://iot-data-platform.onrender.com
+   ```
+
+---
+
+### 2. Dashboard Connection
+1. Update `API_URL` in `dashboard.py`:
+   ```python
+   API_URL = "https://your-backend.onrender.com/data"
+   ```
+2. Run the dashboard locally:
+   ```bash
+   streamlit run dashboard.py
+   ```
+
+---
+
+### 3. Sensor Simulator to Cloud
+1. Update `API_URL` in `sensor.py`:
+   ```python
+   API_URL = "https://your-backend.onrender.com/data"
+   ```
+2. Run the simulator locally to send data to the cloud database:
+   ```bash
+   python sensor.py
+   ```
 
 ---
 
 ## 🔮 Future Improvements
-- **Anomaly Detection:** Implement real-time alerts in the dashboard if temperature or humidity exceeds safe thresholds.
-- **Automatic Dashboard Refresh:** Enable live data updates without manual page reloads.
+- **Advanced Anomaly Detection:** Implement ML models for predictive maintenance.
+- **Automatic Dashboard Refresh:** Enable live updates without manual reloads.
 - **Data Export:** Allow exporting collected data as CSV or Excel for further analysis.
 - **User Authentication:** Add a login system to secure access to the dashboard and API.
-- **Cloud Deployment:** Deploy the backend and dashboard to a cloud platform (e.g., Heroku, Render, or AWS) for remote access.
-- **Real Sensor Integration:** Replace simulated sensor with data from a physical IoT device (e.g., Raspberry Pi, ESP32).
+- **Cloud Deployment Enhancements:** Deploy the dashboard as a cloud-hosted web app.
+- **Real Sensor Integration:** Connect to actual IoT hardware (e.g., Raspberry Pi, ESP32).
 
+---
