@@ -10,11 +10,23 @@ It collects data via a REST API, stores it in SQLite, and visualizes it with a S
 - SQLite database for storage
 - Streamlit dashboard for visualization
 - Automated tests and CI with GitHub Actions
+- Real-time anomaly detection & auto-refresh dashboard
+
+
+
+### 🔍 Anomaly Detection
+The dashboard automatically refreshes every 10 seconds and checks for abnormal sensor readings:
+- **High temperature alert:** If temperature exceeds 28°C
+- **Low humidity alert:** If humidity drops below 45%
+Alerts are displayed in red for quick recognition.
+
 
 ---
 
 ## 📸 Screenshot
 ![Dashboard Screenshot](docs/dashboard.png)
+![Anomaly Alert Screenshot](docs/anomaly_alert.png)
+
 
 ---
 
