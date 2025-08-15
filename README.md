@@ -122,5 +122,14 @@ pytest
 
 ---
 
-## 📄 License
-MIT License
+
+---
+
+## 🔮 Future Improvements
+- **Anomaly Detection:** Implement real-time alerts in the dashboard if temperature or humidity exceeds safe thresholds.
+- **Automatic Dashboard Refresh:** Enable live data updates without manual page reloads.
+- **Data Export:** Allow exporting collected data as CSV or Excel for further analysis.
+- **User Authentication:** Add a login system to secure access to the dashboard and API.
+- **Cloud Deployment:** Deploy the backend and dashboard to a cloud platform (e.g., Heroku, Render, or AWS) for remote access.
+- **Real Sensor Integration:** Replace simulated sensor with data from a physical IoT device (e.g., Raspberry Pi, ESP32).
+
